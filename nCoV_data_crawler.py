@@ -105,5 +105,6 @@ class Data_Crawler:
 			time.sleep(sleep)
 
 
-dc = Data_Crawler()
-dc.cont_crawl()
+if __name__ == '__main__':
+	dc = Data_Crawler()
+	dc.cont_crawl()
