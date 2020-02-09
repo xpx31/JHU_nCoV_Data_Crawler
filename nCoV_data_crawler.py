@@ -61,10 +61,10 @@ class Data_Crawler:
 
 		# Output path
 		today = str(datetime.datetime.today())[:19].replace(" ", "_").replace(":", "_")
-		self.filepath = "./Data/data_" + str(today) + ".csv"
+		self.filepath = "./Data/data_{0}.csv".format(today)
 
 		# Run curl command to save data
-		bash_com = "curl -o " + self.filepath + " " + url
+		bash_com = "curl -o {0} {1}".format(self.filepath, url)
 		print(bash_com)
 
 		try:
@@ -104,3 +104,6 @@ class Data_Crawler:
 
 			time.sleep(sleep)
 
+
+dc = Data_Crawler()
+dc.cont_crawl()
