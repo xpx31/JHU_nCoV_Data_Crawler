@@ -26,6 +26,8 @@ Time: 15:29
 import pandas as pd
 import subprocess
 import datetime
+import time
+import os
 
 
 class Data_Crawler:
@@ -53,8 +55,9 @@ class Data_Crawler:
 		# Determine url address
 		url = url if url is not None \
 			else "https://docs.google.com/spreadsheets/d/1wQVypefm946ch4XDp37uZ-wartW4V7ILdg-qYiDXUHM"
-		gid = "" if None else "gid=" + str(gid) + "&"
-		url = url + "/export?" + gid + "format=csv"
+		gid_ = "" if gid is None else "gid=" + str(gid) + "&"
+		url = "{0}/export?{1}format=csv".format(url, gid_)
+		print(url)
 
 		# Output path
 		today = str(datetime.datetime.today())[:19].replace(" ", "_").replace(":", "_")
@@ -75,3 +78,29 @@ class Data_Crawler:
 
 		# Return pandas dataframe
 		return pd.read_csv(self.filepath) if df_output else None
+
+	def cont_crawl(self, url=None, sleep=7200):
+		"""
+		continuous crawling from the JHU Google Spreadsheet
+		delete any duplicated csv files saved
+
+		:param url: base url of the google spreadsheet
+									eg. "https://docs.google.com/spreadsheets/d/1wQVypefm946ch4XDp37uZ-wartW4V7ILdg-qYiDXUHM"
+		:param sleep: sleep time between each crawl, 2 hours by default
+		:return: None
+		"""
+
+		while True:
+			filepath_old = self.filepath
+			df_new = self.crawl(url)
+
+			if filepath_old is None:
+				pass
+			else:
+				df_old = pd.read_csv(filepath_old)
+				if df_new.equals(df_old):
+					os.remove(self.filepath)
+					self.filepath = filepath_old
+
+			time.sleep(sleep)
+
