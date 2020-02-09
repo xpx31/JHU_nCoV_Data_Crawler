@@ -65,8 +65,9 @@ class Data_Crawler:
 		print(bash_com)
 
 		try:
-			subprocess.Popen(bash_com)
+			p = subprocess.Popen(bash_com)
 			subprocess.check_output(['bash', '-c', bash_com])
+			p.wait()
 		except subprocess.CalledProcessError:
 			print("Error in crawling " + url)
 		except ValueError:
