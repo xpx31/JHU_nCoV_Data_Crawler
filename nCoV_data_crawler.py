@@ -38,11 +38,23 @@ class Data_Crawler:
 	def __init__(self):
 		self.filepath = None
 
-	def crawl(self, url=None, df=True):
+	def crawl(self, url=None, gid=None, df_output=True):
+		"""
+
+		:param url: base url of the google spreadsheet
+									eg. "https://docs.google.com/spreadsheets/d/1wQVypefm946ch4XDp37uZ-wartW4V7ILdg-qYiDXUHM"
+		:param gid: the gid page number of the google sheet, see the url of google spread sheet for more detail
+		:param df_output: flag indicating output a pandas dataframe for the content crawled
+		:return:
+		        df_output = True: dataframe for the content crawled
+						df_output = False: None for a successful crawl
+
+		"""
 		# Determine url address
 		url = url if url is not None \
 			else "https://docs.google.com/spreadsheets/d/1wQVypefm946ch4XDp37uZ-wartW4V7ILdg-qYiDXUHM"
-		url = url + "/export?format=csv"
+		gid = "" if None else "gid=" + str(gid) + "&"
+		url = url + "/export?" + gid + "format=csv"
 
 		# Output path
 		today = str(datetime.datetime.today())[:19].replace(" ", "_").replace(":", "_")
@@ -61,8 +73,4 @@ class Data_Crawler:
 			print("bash command not valid, examine url: " + url)
 
 		# Return pandas dataframe
-		return pd.read_csv(self.filepath) if df else None
-
-
-dc = Data_Crawler()
-dc.crawl()
+		return pd.read_csv(self.filepath) if df_output else None
